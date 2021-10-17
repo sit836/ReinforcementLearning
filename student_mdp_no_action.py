@@ -14,8 +14,8 @@ class RewardChain:
         assert len(transition_matrix[0]) == len(transition_matrix), "transition_matrix must be square!"
         assert (len(self.rewards) == len(transition_matrix)), "rewards must be same length as transition_matrix"
 
-    def generate_path(self, start_state):
-        path = []
+    def generate_episode(self, start_state):
+        episode = []
         if isinstance(start_state, str):
             start_indx = self.state_names.index(start_state)
         else:
@@ -24,30 +24,30 @@ class RewardChain:
         state = start_indx
 
         while state != self.terminal_index:
-            path.append(state)
+            episode.append(state)
             transition_prob = self.transition_matrix[state]
             next_state = np.random.choice(range(len(self.transition_matrix)), p=transition_prob)
             state = next_state
 
-        path.append(self.terminal_index)
+        episode.append(self.terminal_index)
 
         if isinstance(start_state, str):
-            return self.pretty(path)
+            return self.pretty(episode)
         else:
-            return path
+            return episode
 
-    def pretty(self, path):
-        return [self.state_names[i] for i in path]
+    def pretty(self, episode):
+        return [self.state_names[i] for i in episode]
 
-    def compute_total_discounted_reward(self, path):
-        str_check = [isinstance(x, str) for x in path]
+    def compute_total_discounted_reward(self, episode):
+        str_check = [isinstance(x, str) for x in episode]
         if any(str_check):
             assert all(str_check), "Path must be all int or all string"
-            path = [self.state_names.index(x) for x in path]
+            episode = [self.state_names.index(x) for x in episode]
 
         counter = 0
         reward = 0
-        for state in path:
+        for state in episode:
             reward += (self.rewards[state] * (self.discount_factor ** counter))
             counter += 1
 
@@ -59,8 +59,8 @@ class RewardChain:
         for s in range(len(self.state_names)):
             rewards = np.zeros(num_iteration)
             for i in range(num_iteration):
-                path = chain.generate_path(s)
-                rewards[i] = chain.compute_total_discounted_reward(path)
+                episode = chain.generate_episode(s)
+                rewards[i] = chain.compute_total_discounted_reward(episode)
 
             states[s] = np.mean(rewards)
         return {state_names[i]: round(states[i], 2) for i in range(len(self.transition_matrix))}
@@ -85,15 +85,15 @@ if __name__ == '__main__':
                          [.1, 0, 0, 0, 0, .9, 0],
                          [0, 0, 0, 0, 0, 0, 1]]
     rewards = [-2, -2, -2, 10, 1, -1, 0]
-    discount_factor = 0.1
+    discount_factor = 0.9
 
     chain = RewardChain(transition_matrix, rewards, state_names, discount_factor)
 
-    # path = chain.generate_path("Class_1")
-    # print("path: ", path)
-    # print("Return: ", chain.compute_total_discounted_reward(path))
+    # episode = chain.generate_path("Class_1")
+    # print("episode: ", episode)
+    # print("Return: ", chain.compute_total_discounted_reward(episode))
 
-    estimated_state_value_function = chain.evaluate_state_value_function(num_iteration=10000)
+    estimated_state_value_function = chain.evaluate_state_value_function(num_iteration=1000)
     theoretical_state_value_function = chain.compute_theoretical_state_value_function
     print("estimated_state_value_function: ", estimated_state_value_function)
     print("theoretical_state_value_function: ", theoretical_state_value_function)
