@@ -10,6 +10,8 @@ from gym import Env, spaces
 from gym.utils import seeding
 from gym.envs.toy_text.discrete import categorical_sample
 
+from constants import FACEBOOK, CLASS1, CLASS2, CLASS3, SLEEP
+
 
 class DiscreteLimitActionsEnv(Env):
     """
@@ -75,15 +77,8 @@ class StudentEnv(DiscreteLimitActionsEnv):
 
     def __init__(self):
         # states / observations
-        FACEBOOK = 0
-        CLASS1 = 1
-        CLASS2 = 2
-        CLASS3 = 3
-        SLEEP = 4  # terminal state
         observations = [FACEBOOK, CLASS1, CLASS2, CLASS3, SLEEP]
-
         nS = len(observations)
-
         initial_state_distribution = np.ones(nS) / nS
 
         # P is a dict of dict of lists, where
