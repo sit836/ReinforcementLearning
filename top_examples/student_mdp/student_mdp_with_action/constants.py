@@ -12,3 +12,6 @@ actions_for_obs = {
     3: {0: 'pub', 1: 'study'},
     4: {0: 'sleep'}
 }
+
+discount_factor = 0.9
+theta = 0.0001

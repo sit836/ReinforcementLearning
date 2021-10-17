@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from discrete_limit_env import StudentEnv
 
-from constants import actions_for_obs, obs
+from constants import actions_for_obs, obs, theta, discount_factor
 from helper import print_trajectory, create_random_policy
 from dynamic_programming import value_iteration, policy_eval
 
@@ -74,6 +74,13 @@ if __name__ == '__main__':
 
     # Policy evaluation
     random_policy = create_random_policy()
-    value_fun = policy_eval(random_policy, env)
+    value_fun = policy_eval(random_policy, env, discount_factor=discount_factor, theta=theta)
     for s, value in enumerate(value_fun):
         print(f"optimal state-value in state {obs[s]}: ", round(value, 2))
+
+    # Value iteration
+    optimal_policy, optimal_value_fun = value_iteration(env, theta=theta, discount_factor=discount_factor)
+    for s, actions in enumerate(optimal_policy):
+        print(f"In state {obs[s]}")
+        print(f"optimal state-value: ", optimal_value_fun[s])
+        print(f"action for optimal policy: ", actions_for_obs[s][np.argmax(actions)], '\n')
