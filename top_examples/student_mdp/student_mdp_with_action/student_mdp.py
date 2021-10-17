@@ -16,7 +16,7 @@ class RandomAgent(object):
         return self.action_space.sample()[observation]
 
 
-def sample_mdp(env, agent, episode_count, gamma=1.0):
+def sample_mdp(env, agent, episode_count, discount_factor=1.0):
     episodes = []  # list of lists, trajectories per episode
     rewards_by_state = defaultdict(list)  # total rewards per starting state
 
@@ -41,7 +41,7 @@ def sample_mdp(env, agent, episode_count, gamma=1.0):
             action = agent.act(ob, reward, done)
             episode.append(action)
             ob, reward, done, _ = env.step(action)
-            cum_reward += reward * (gamma ** step)
+            cum_reward += reward * (discount_factor ** step)
             episode.append(ob)
             if done:
                 rewards_by_state[start_state].append(cum_reward)
