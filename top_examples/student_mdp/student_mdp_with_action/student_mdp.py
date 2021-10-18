@@ -78,7 +78,7 @@ if __name__ == '__main__':
     for s, value in enumerate(value_fun):
         print(f"optimal state-value in state {obs[s]}: ", round(value, 2))
 
-    policy, v = policy_improvement(env)
+    policy, v = policy_improvement(env, theta, discount_factor)
     print(v)
 
     # Value iteration

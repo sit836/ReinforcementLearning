@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def policy_eval(policy, env, discount_factor=1.0, theta=0.00001):
+def policy_eval(policy, env, discount_factor, theta):
     """
     Evaluate a policy given an environment and a full description of the environment's dynamics.
     Copied from https://github.com/dennybritz/reinforcement-learning/blob/master/DP/Value%20Iteration%20Solution.ipynb
@@ -41,15 +41,34 @@ def policy_eval(policy, env, discount_factor=1.0, theta=0.00001):
     return np.array(V)
 
 
-def policy_improvement(env, policy_eval_fn=policy_eval, discount_factor=1.0):
+def one_step_lookahead(state, V, env, discount_factor):
+    """
+    Helper function to calculate the value for all action in a given state.
+
+    Args:
+        state: The state to consider (int)
+        V: The value to use as an estimator, Vector of length env.nS
+        env: The OpenAI environment.
+        discount_factor: gamma discount factor.
+
+    Returns:
+        A vector of length env.vA[state] containing the expected value of each action.
+    """
+    A = np.zeros(env.vA[state])
+    for a in range(env.vA[state]):
+        for prob, next_state, reward, _ in env.P[state][a]:
+            A[a] += prob * (reward + discount_factor * V[next_state])
+    return A
+
+
+def policy_improvement(env, theta, discount_factor):
     """
     Policy Improvement Algorithm. Iteratively evaluates and improves a policy
     until an optimal policy is found.
 
     Args:
         env: The OpenAI environment.
-        policy_eval_fn: Policy Evaluation function that takes 3 arguments:
-            policy, env, discount_factor.
+        theta: We stop evaluation once our value function change is less than theta for all states.
         discount_factor: gamma discount factor.
 
     Returns:
@@ -59,31 +78,12 @@ def policy_improvement(env, policy_eval_fn=policy_eval, discount_factor=1.0):
         V is the value function for the optimal policy.
 
     """
-
-    def one_step_lookahead(state, V):
-        """
-        Helper function to calculate the value for all action in a given state.
-
-        Args:
-            state: The state to consider (int)
-            V: The value to use as an estimator, Vector of length env.nS
-
-        Returns:
-            A vector of length env.vA[state] containing the expected value of each action.
-        """
-        A = np.zeros(env.vA[state])
-        for a in range(env.vA[state]):
-            for prob, next_state, reward, _ in env.P[state][a]:
-                A[a] += prob * (reward + discount_factor * V[next_state])
-        return A
-
     # Start with a random policy
-    # policy = np.ones([env.nS, env.nA]) / env.nA
     policy = np.array([np.ones(nA) / nA for nA in env.vA])
 
     while True:
         # Evaluate the current policy
-        V = policy_eval_fn(policy, env, discount_factor)
+        V = policy_eval(policy, env, discount_factor, theta)
 
         # Will be set to false if we make any changes to the policy
         policy_stable = True
@@ -95,7 +95,7 @@ def policy_improvement(env, policy_eval_fn=policy_eval, discount_factor=1.0):
 
             # Find the best action by one-step lookahead
             # Ties are resolved arbitarily
-            action_values = one_step_lookahead(s, V)
+            action_values = one_step_lookahead(s, V, env, discount_factor)
             best_a = np.argmax(action_values)
 
             # Greedily update the policy
@@ -108,7 +108,7 @@ def policy_improvement(env, policy_eval_fn=policy_eval, discount_factor=1.0):
             return policy, V
 
 
-def value_iteration(env, theta=0.0001, discount_factor=1.0):
+def value_iteration(env, theta, discount_factor):
     """
     Value Iteration Algorithm.
     Copied from https://github.com/dennybritz/reinforcement-learning/blob/master/DP/Value%20Iteration%20Solution.ipynb
@@ -125,24 +125,6 @@ def value_iteration(env, theta=0.0001, discount_factor=1.0):
     Returns:
         A tuple (policy, V) of the optimal policy and the optimal value function.
     """
-
-    def one_step_lookahead(state, V):
-        """
-        Helper function to calculate the value for all action in a given state.
-
-        Args:
-            state: The state to consider (int)
-            V: The value to use as an estimator, Vector of length env.nS
-
-        Returns:
-            A vector of length env.vA[state] containing the expected value of each action.
-        """
-        A = np.zeros(env.vA[state])
-        for a in range(env.vA[state]):
-            for prob, next_state, reward, _ in env.P[state][a]:
-                A[a] += prob * (reward + discount_factor * V[next_state])
-        return A
-
     V = np.zeros(env.nS)
     while True:
         # Stopping condition
@@ -150,7 +132,7 @@ def value_iteration(env, theta=0.0001, discount_factor=1.0):
         # Update each state...
         for s in range(env.nS):
             # Do a one-step lookahead to find the best action
-            A = one_step_lookahead(s, V)
+            A = one_step_lookahead(s, V, env, discount_factor)
             best_action_value = np.max(A)
             # Calculate delta across all states seen so far
             delta = max(delta, np.abs(best_action_value - V[s]))
@@ -164,7 +146,7 @@ def value_iteration(env, theta=0.0001, discount_factor=1.0):
     policy = [np.zeros(nA) for nA in env.vA]
     for s in range(env.nS):
         # One step lookahead to find the best action for this state
-        A = one_step_lookahead(s, V)
+        A = one_step_lookahead(s, V, env, discount_factor)
         best_action = np.argmax(A)
         # Always take the best action
         policy[s][best_action] = 1.0
