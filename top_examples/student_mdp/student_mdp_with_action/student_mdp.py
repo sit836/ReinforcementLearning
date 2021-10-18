@@ -54,6 +54,14 @@ def sample_mdp(env, agent, episode_count, discount_factor=1.0):
     return episodes, rewards_by_state
 
 
+def print_result(opt_policy, opt_value_fun, method):
+    print(f"###{method}###")
+    for s, actions in enumerate(opt_policy):
+        print(f"In state {obs[s]}")
+        print(f"optimal state-value: ", opt_value_fun[s])
+        print(f"action for optimal policy: ", actions_for_obs[s][np.argmax(actions)], '\n')
+
+
 if __name__ == '__main__':
     env = StudentEnv()
     agent = RandomAgent(env.action_space)
@@ -67,23 +75,19 @@ if __name__ == '__main__':
     # one_episode = episodes[0]
     # print_trajectory(obs, actions_for_obs, one_episode)
 
-    # State values evaluation
-    for start_state in range(len(obs)):
-        avg_reward = np.mean(rewards[start_state])
-        print(obs[start_state], round(avg_reward, 2))
+    # # State values evaluation
+    # for start_state in range(len(obs)):
+    #     avg_reward = np.mean(rewards[start_state])
+    #     print(obs[start_state], round(avg_reward, 2))
+    #
+    # # Policy evaluation
+    # random_policy = create_random_policy()
+    # value_fun = policy_eval(random_policy, env, discount_factor=discount_factor, theta=theta)
+    # for s, value in enumerate(value_fun):
+    #     print(f"optimal state-value in state {obs[s]}: ", round(value, 2))
 
-    # Policy evaluation
-    random_policy = create_random_policy()
-    value_fun = policy_eval(random_policy, env, discount_factor=discount_factor, theta=theta)
-    for s, value in enumerate(value_fun):
-        print(f"optimal state-value in state {obs[s]}: ", round(value, 2))
+    opt_policy_pi, opt_value_fun_pi = policy_improvement(env, theta, discount_factor)
+    print_result(opt_policy_pi, opt_value_fun_pi, method="Policy Improvement")
 
-    policy, v = policy_improvement(env, theta, discount_factor)
-    print(v)
-
-    # Value iteration
-    optimal_policy, optimal_value_fun = value_iteration(env, theta=theta, discount_factor=discount_factor)
-    for s, actions in enumerate(optimal_policy):
-        print(f"In state {obs[s]}")
-        print(f"optimal state-value: ", optimal_value_fun[s])
-        print(f"action for optimal policy: ", actions_for_obs[s][np.argmax(actions)], '\n')
+    opt_policy_vi, opt_value_fun_vi = value_iteration(env, theta=theta, discount_factor=discount_factor)
+    print_result(opt_policy_vi, opt_value_fun_vi, method="Value Iteration")

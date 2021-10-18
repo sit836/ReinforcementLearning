@@ -79,7 +79,7 @@ def policy_improvement(env, theta, discount_factor):
 
     """
     # Start with a random policy
-    policy = np.array([np.ones(nA) / nA for nA in env.vA])
+    policy = [np.ones(nA) / nA for nA in env.vA]
 
     while True:
         # Evaluate the current policy
