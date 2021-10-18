@@ -7,10 +7,6 @@ from constants import actions_for_obs, obs, theta, discount_factor
 from helper import print_trajectory, create_random_policy
 from dynamic_programming import value_iteration, policy_eval, policy_improvement
 
-"""
-Reference: https://github.com/frangipane/reinforcement-learning/blob/master/02-dynamic-programming/student_MDP.ipynb 
-"""
-
 
 class RandomAgent(object):
     def __init__(self, action_space):
