@@ -69,16 +69,17 @@ def policy_improvement(env, policy_eval_fn=policy_eval, discount_factor=1.0):
             V: The value to use as an estimator, Vector of length env.nS
 
         Returns:
-            A vector of length env.nA containing the expected value of each action.
+            A vector of length env.vA[state] containing the expected value of each action.
         """
-        A = np.zeros(env.nA)
-        for a in range(env.nA):
-            for prob, next_state, reward, done in env.P[state][a]:
+        A = np.zeros(env.vA[state])
+        for a in range(env.vA[state]):
+            for prob, next_state, reward, _ in env.P[state][a]:
                 A[a] += prob * (reward + discount_factor * V[next_state])
         return A
 
     # Start with a random policy
-    policy = np.ones([env.nS, env.nA]) / env.nA
+    # policy = np.ones([env.nS, env.nA]) / env.nA
+    policy = np.array([np.ones(nA) / nA for nA in env.vA])
 
     while True:
         # Evaluate the current policy
@@ -100,7 +101,7 @@ def policy_improvement(env, policy_eval_fn=policy_eval, discount_factor=1.0):
             # Greedily update the policy
             if chosen_a != best_a:
                 policy_stable = False
-            policy[s] = np.eye(env.nA)[best_a]
+            policy[s] = np.eye(env.vA[s])[best_a]
 
         # If the policy is stable we've found an optimal policy. Return it
         if policy_stable:

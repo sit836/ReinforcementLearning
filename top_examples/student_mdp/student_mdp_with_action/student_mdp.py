@@ -5,7 +5,7 @@ from discrete_limit_env import StudentEnv
 
 from constants import actions_for_obs, obs, theta, discount_factor
 from helper import print_trajectory, create_random_policy
-from dynamic_programming import value_iteration, policy_eval
+from dynamic_programming import value_iteration, policy_eval, policy_improvement
 
 """
 Reference: https://github.com/frangipane/reinforcement-learning/blob/master/02-dynamic-programming/student_MDP.ipynb 
@@ -77,6 +77,9 @@ if __name__ == '__main__':
     value_fun = policy_eval(random_policy, env, discount_factor=discount_factor, theta=theta)
     for s, value in enumerate(value_fun):
         print(f"optimal state-value in state {obs[s]}: ", round(value, 2))
+
+    policy, v = policy_improvement(env)
+    print(v)
 
     # Value iteration
     optimal_policy, optimal_value_fun = value_iteration(env, theta=theta, discount_factor=discount_factor)
