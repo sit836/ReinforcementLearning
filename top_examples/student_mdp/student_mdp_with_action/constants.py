@@ -14,4 +14,4 @@ actions_for_obs = {
 }
 
 discount_factor = 0.9
-theta = 0.0001
+theta = 0.0001  # stopping threshold in solving Bellman's equation

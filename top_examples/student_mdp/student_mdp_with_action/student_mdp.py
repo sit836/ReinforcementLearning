@@ -64,10 +64,10 @@ if __name__ == '__main__':
     print(env.action_space)
     print(env.observation_space)
 
-    episodes, rewards = sample_mdp(env, agent, episode_count=10000)
+    episodes, rewards = sample_mdp(env, agent, episode_count=10)
     # print(episodes)
     # print(rewards)
-
+    #
     # one_episode = episodes[0]
     # print_trajectory(obs, actions_for_obs, one_episode)
 
