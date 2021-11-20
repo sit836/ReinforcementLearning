@@ -64,7 +64,7 @@ if __name__ == '__main__':
     print(env.action_space)
     print(env.observation_space)
 
-    episodes, rewards = sample_mdp(env, agent, episode_count=10)
+    episodes, rewards = sample_mdp(env, agent, episode_count=1000)
     # print(episodes)
     # print(rewards)
     #
@@ -75,12 +75,12 @@ if __name__ == '__main__':
     # for start_state in range(len(obs)):
     #     avg_reward = np.mean(rewards[start_state])
     #     print(obs[start_state], round(avg_reward, 2))
-    #
-    # # Policy evaluation
-    # random_policy = create_random_policy()
-    # value_fun = policy_eval(random_policy, env, discount_factor=discount_factor, theta=theta)
-    # for s, value in enumerate(value_fun):
-    #     print(f"optimal state-value in state {obs[s]}: ", round(value, 2))
+
+    # Policy evaluation
+    random_policy = create_random_policy()
+    value_fun = policy_eval(random_policy, env, discount_factor=discount_factor, theta=theta)
+    for s, value in enumerate(value_fun):
+        print(f"optimal state-value in state {obs[s]}: ", round(value, 2))
 
     opt_policy_pi, opt_value_fun_pi = policy_improvement(env, theta, discount_factor)
     print_result(opt_policy_pi, opt_value_fun_pi, method="Policy Improvement")
