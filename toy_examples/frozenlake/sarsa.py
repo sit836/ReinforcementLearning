@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 from utils import make_plot
 
+
 class SARSA:
     def __init__(self, env):
         self.env = env
@@ -63,7 +64,6 @@ class SARSA:
                 if enable_visual:
                     self.env.render()
                 s_, reward, done, _ = self.env.step(a)
-                # pick an action according the state and trained Q table
                 a_ = np.argmax(Q[s_])
                 if done:
                     reward_array[i] = reward

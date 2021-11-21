@@ -5,7 +5,7 @@ from tqdm import tqdm
 from utils import make_plot
 
 
-class QLearning:
+class SARSA:
     def __init__(self, env):
         self.env = env
         self.n_states = env.observation_space.n
@@ -63,7 +63,6 @@ class QLearning:
                 if enable_visual:
                     self.env.render()
                 s_, reward, done, _ = self.env.step(a)
-                # pick an action according the state and trained Q table
                 a_ = np.argmax(Q[s_])
                 if done:
                     reward_array[i] = reward
@@ -84,8 +83,8 @@ if __name__ == '__main__':
     is_slippery = True
     env = gym.make("FrozenLake-v1", is_slippery=is_slippery)
 
-    q_learning = QLearning(env)
-    Q, _ = q_learning.train(alpha, gamma, epsilon, n_train_episodes)
+    sarsa = SARSA(env)
+    Q, _ = sarsa.train(alpha, gamma, epsilon, n_train_episodes)
 
-    test_reward_array = q_learning.evaluation(Q, n_test_episodes=n_test_episodes, enable_visual=enable_visual)
+    test_reward_array = sarsa.evaluation(Q, n_test_episodes=n_test_episodes, enable_visual=enable_visual)
     make_plot(test_reward_array, n_test_episodes, method='Q-learning')
