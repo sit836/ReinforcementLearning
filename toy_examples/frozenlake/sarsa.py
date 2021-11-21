@@ -1,8 +1,8 @@
 import gym
 import numpy as np
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 
+from utils import make_plot
 
 class SARSA:
     def __init__(self, env):
@@ -88,14 +88,4 @@ if __name__ == '__main__':
     Q, _ = sarsa.train(alpha, gamma, epsilon, n_train_episodes)
 
     test_reward_array = sarsa.evaluation(Q, n_test_episodes=n_test_episodes, enable_visual=enable_visual)
-    avg_test_reward = np.mean(test_reward_array)
-
-    plt.subplots(figsize=(6, 6), dpi=100)
-    plt.hist(test_reward_array)
-    plt.ylabel('Reward', fontsize=12)
-    plt.xlabel('Episode', fontsize=12)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.title('SARSA Agent\nReward Per Episode for {} Episodes - Average: {:.2f}'.format(n_test_episodes, avg_test_reward),
-              fontsize=12)
-    plt.show()
+    make_plot(test_reward_array, n_test_episodes, method='SARSA')
