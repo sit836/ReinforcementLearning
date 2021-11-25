@@ -76,7 +76,7 @@ class SARSA:
 if __name__ == '__main__':
     alpha = 0.1  # learning rate
     gamma = 0.9  # discount factor
-    epsilon = 0.5  # exploration parameter
+    epsilon = 0.4  # exploration parameter
     n_train_episodes = 10000
     n_test_episodes = 100
     enable_visual = True
