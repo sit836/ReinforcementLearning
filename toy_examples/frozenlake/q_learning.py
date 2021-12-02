@@ -9,7 +9,7 @@ class QLearning:
     def __init__(self, env):
         self.env = env
         self.n_states = env.observation_space.n
-        self.n_actions = env.action_space.n
+        self.n_actions = env.dim_action_space.n
 
     def epsilon_greedy(self, Q, epsilon, n_actions, s):
         """
