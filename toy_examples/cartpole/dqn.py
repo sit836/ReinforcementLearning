@@ -112,8 +112,10 @@ def cartpole():
             state_next, reward, terminal, info = env.step(action)
             reward = reward if not terminal else -reward
             state_next = np.reshape(state_next, [1, dim_observation_space])
+
             dqn_solver.remember(state, action, reward, state_next, terminal)
             state = state_next
+
             if terminal:
                 print(
                     "Run: " + str(run) + ", exploration: " + str(dqn_solver.exploration_rate) + ", score: " + str(step))
@@ -124,8 +126,8 @@ def cartpole():
 if __name__ == "__main__":
     ENV_NAME = "CartPole-v1"
     GAMMA = 0.95
-    LEARNING_RATE = 0.01
-    MEMORY_SIZE = 1000000
+    LEARNING_RATE = 1e-8
+    MEMORY_SIZE = 1000
     BATCH_SIZE = 100
     EXPLORATION_MAX = 1.0
     EXPLORATION_MIN = 0.01
