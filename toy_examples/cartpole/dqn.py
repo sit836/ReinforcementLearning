@@ -127,7 +127,7 @@ if __name__ == "__main__":
     ENV_NAME = "CartPole-v1"
     GAMMA = 0.95
     LEARNING_RATE = 1e-8
-    MEMORY_SIZE = 1000
+    MEMORY_SIZE = 10000
     BATCH_SIZE = 100
     EXPLORATION_MAX = 1.0
     EXPLORATION_MIN = 0.01
