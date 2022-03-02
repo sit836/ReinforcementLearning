@@ -159,6 +159,8 @@ def train(theta, alpha, gamma, Policy, max_epsidoes=1000, seed=None, evaluate=Fa
     policy = Policy(theta, alpha, gamma)
 
     for i in tqdm(range(max_epsidoes)):
+        # env.render()
+
         total_reward, rewards, observations, actions, probs = run_episode(env, policy)
         episode_rewards.append(total_reward)
 
@@ -167,8 +169,9 @@ def train(theta, alpha, gamma, Policy, max_epsidoes=1000, seed=None, evaluate=Fa
 
     # evaluation call after training is finished - evaluate last trained policy on 100 episodes
     if evaluate:
+        consecutive_target = 100
         env = Monitor(env, 'pg_cartpole/', video_callable=False, force=True)
-        for _ in range(100):
+        for _ in range(consecutive_target):
             run_episode(env, policy, render=False)
         env.env.close()
 
