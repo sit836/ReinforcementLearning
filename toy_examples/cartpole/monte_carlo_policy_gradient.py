@@ -163,7 +163,6 @@ def train(theta, alpha, gamma, Policy, max_epsidoes=1000, seed=None, evaluate=Fa
 
         total_reward, rewards, observations, actions, probs = run_episode(env, policy)
         episode_rewards.append(total_reward)
-
         policy.update(rewards, observations, actions)
         print("EP: " + str(i) + " Score: " + str(total_reward) + " ", end="\r", flush=False)
 
@@ -184,7 +183,7 @@ def plot_rewards(episode_rewards):
 
     plt.plot(episode_rewards)
     plt.axhline(y=success_threshold, color='r', linestyle='--', label='Success Threshold')
-    plt.ylabel("Reward", fontsize=fontsize)
+    plt.ylabel("Total Reward", fontsize=fontsize)
     plt.xlabel("Iteration", fontsize=fontsize)
     plt.legend(fontsize=fontsize)
     plt.show()
