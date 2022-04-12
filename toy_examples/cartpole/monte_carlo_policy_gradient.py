@@ -159,7 +159,7 @@ def train(theta, alpha, gamma, Policy, max_epsidoes=1000, seed=None, evaluate=Fa
     policy = Policy(theta, alpha, gamma)
 
     for i in tqdm(range(max_epsidoes)):
-        # env.render()
+        env.render()
 
         total_reward, rewards, observations, actions, probs = run_episode(env, policy)
         episode_rewards.append(total_reward)
