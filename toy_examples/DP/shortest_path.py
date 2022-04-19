@@ -26,7 +26,7 @@ while i < max_iter:
             if cost < lowest_cost:
                 lowest_cost = cost
         next_J[v] = lowest_cost
-    print(f"i={i}, J={J}")
+    print(f"i={i}, J={J}, next_J={next_J}")
 
     if np.equal(next_J, J).all():
         break
