@@ -22,16 +22,28 @@ while i < max_iter:
         # minimize Q[v, w] + J[w] over all choices of w
         lowest_cost = inf
         for w in nodes:
+            print(f'i={i}, Q[{v}, {w}]={Q[v, w]}, J[{w}]={J[w]}')
             cost = Q[v, w] + J[w]
             if cost < lowest_cost:
                 lowest_cost = cost
         next_J[v] = lowest_cost
-    print(f"i={i}, J={J}, next_J={next_J}")
 
     if np.equal(next_J, J).all():
         break
     else:
         J[:] = next_J  # Copy contents of next_J to J
         i += 1
+
+    print(f"i={i}, J={J}")
+    """
+    i=1, J=[1 6 2 4 4 1 0]
+        J[0] = 1: Start from node A, take 1 step, the min cost is 1;
+        J[1] = 6: Start from node B, take 1 step, the min cost is 6;
+        ...
+    i=2, J=[7 10  3  5  4  1  0]
+        J[0] = 7: Start from node A, take 2 steps, the min cost is 7; 
+        ...     
+    """
+
 
 print("The cost-to-go function is", J)
